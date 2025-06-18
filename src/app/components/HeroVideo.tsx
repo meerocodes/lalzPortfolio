@@ -44,7 +44,7 @@ export default function HeroVideo() {
 
                     {/* Video inset inside frame window */}
                     {shrink && (
-                        <div className="absolute top-[20%] left-[25%] w-[52%] h-[55%] overflow-hidden rounded-sm">
+                        <div className="absolute top-[20%] left-[22%] w-[55%] h-[58%] overflow-hidden rounded-sm">
                             <video
                                 autoPlay
                                 muted
@@ -74,9 +74,9 @@ export default function HeroVideo() {
             {/* Intro text and button */}
             {showText && (
                 <div className="absolute inset-x-0 bottom-10 flex flex-col items-center justify-center text-center text-white px-4 z-30 space-y-4 animate-fade-in">
-                    <h1 className="text-3xl md:text-5xl font-bold">Hey, I'm Lalz</h1>
+                    <h1 className="text-3xl md:text-5xl font-bold">Hey, I&apos;m Lalz</h1>
                     <p className="text-lg md:text-xl max-w-2xl">
-                        I'm a multidisciplinary creative & developer. Welcome to my interactive portfolio — a space where design, storytelling, and code collide.
+                        I&apos;m a multidisciplinary creative & developer. Welcome to my interactive portfolio — a space where design, storytelling, and code collide.
                     </p>
                     <button
                         onClick={scrollToProjects}
