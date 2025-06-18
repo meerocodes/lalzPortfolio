@@ -1,0 +1,8 @@
+[build]
+  command   = "npm run build"
+  functions = "netlify/functions"  # if you have any Netlify Functions
+  publish   = "out"                # if you're exporting a static build
+  # OR publish = ".next"           # if you're using Next.js SSR on Netlify
+
+[build.environment]
+  NODE_VERSION = "18"              # match your local Node version
