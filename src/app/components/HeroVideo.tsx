@@ -65,7 +65,7 @@ export default function HeroVideo() {
                 <div className="relative w-full h-full">
                     {/* Video or Command Prompt Menu inside frame window */}
                     {shrink && (
-                        <div className="absolute top-[2%] left-[26%] w-[70%] h-[70%] rounded-sm bg-black z-10">
+                        <div className="absolute top-[10%] left-[22%] w-[60%] h-[50%] rounded-sm bg-black z-10">
                             {!showMenu ? (
                                 <video
                                     ref={videoRef}
@@ -81,17 +81,32 @@ export default function HeroVideo() {
                             ) : (
                                 <div className="w-full h-full px-4 py-4 flex flex-col justify-center text-green-300 font-mono">
                                     <div>
-                                        <span>User@Macintosh:~$</span>
+                                            <span className="ml-5">User@Macintosh:~$</span>
                                     </div>
                                     <div className="mt-2 space-y-2">
-                                        {menuOptions.map((opt, idx) => (
-                                            <div key={idx} className="flex items-center">
-                                                <span className="mr-2">
-                                                    {selectedIndex === idx ? '→' : ' '}
-                                                </span>
-                                                <span className={`${selectedIndex === idx ? 'underline' : ''}`}> {opt.label}</span>
-                                            </div>
-                                        ))}
+                                            {menuOptions.map((opt, idx) => (
+                                                <button
+                                                    key={idx}
+                                                    onClick={() => {
+                                                        setSelectedIndex(idx);
+                                                        opt.action();
+                                                    }}
+                                                    className={`
+      w-full flex items-center
+      ${selectedIndex === idx ? 'underline' : ''}
+      hover:bg-white/10
+      px-2 py-1
+      cursor-pointer
+    `}
+                                                >
+                                                    <span className="mr-2">
+                                                        {selectedIndex === idx ? '→' : ' '}
+                                                    </span>
+                                                    <span className="ml-[10px]">
+                                                        {opt.label}
+                                                    </span>
+                                                </button>
+                                            ))}
                                     </div>
                                 </div>
                             )}
