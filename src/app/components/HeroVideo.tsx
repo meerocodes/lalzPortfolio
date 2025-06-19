@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { Power } from 'lucide-react';
 
 export default function HeroVideo() {
     const [shrink, setShrink] = useState(false);
@@ -11,9 +12,18 @@ export default function HeroVideo() {
 
     // Menu options with label and action
     const menuOptions = [
-        { label: 'Projects', action: () => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }) },
-        { label: 'Contact', action: () => window.location.href = 'mailto:you@example.com' },
-        { label: 'Play Video', action: () => handlePlay() }
+        {
+            label: 'Projects',
+            action: () =>
+                document
+                    .getElementById('projects')
+                    ?.scrollIntoView({ behavior: 'smooth' }),
+        },
+        {
+            label: 'Contact',
+            action: () => (window.location.href = 'mailto:you@example.com'),
+        },
+        { label: 'Play Video', action: () => handlePlay() },
     ];
 
     useEffect(() => {
@@ -59,7 +69,8 @@ export default function HeroVideo() {
         <section className="relative w-full h-screen overflow-hidden bg-black">
             {/* Video + TV Frame Container */}
             <div
-                className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-in-out z-10 overflow-hidden
+                className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+          transition-all duration-1000 ease-in-out z-10 overflow-hidden
           ${shrink ? 'w-[90vw] h-[90vw] md:w-[700px] md:h-[660px]' : 'w-full h-full'}`}
             >
                 <div className="relative w-full h-full">
@@ -79,34 +90,32 @@ export default function HeroVideo() {
                                     Your browser does not support the video tag.
                                 </video>
                             ) : (
-                                    <div className="w-full h-full px-4 py-4 flex flex-col justify-center text-green-300 font-mono text-xs md:text-base">
-<div>
-                                            <span className="ml-5">User@Macintosh:~$</span>
+                                <div className="w-full h-full px-4 py-4 flex flex-col justify-center text-green-300 font-mono text-xs md:text-base">
+                                    <div>
+                                        <span className="ml-5">User@Macintosh:~$</span>
                                     </div>
                                     <div className="mt-2 space-y-2">
-                                            {menuOptions.map((opt, idx) => (
-                                                <button
-                                                    key={idx}
-                                                    onClick={() => {
-                                                        setSelectedIndex(idx);
-                                                        opt.action();
-                                                    }}
-                                                    className={`
-      w-full flex items-center
-      ${selectedIndex === idx ? 'underline' : ''}
-      hover:bg-white/10
-      px-2 py-1
-      cursor-pointer
-    `}
-                                                >
-                                                    <span className="mr-2">
-                                                        {selectedIndex === idx ? '→' : ' '}
-                                                    </span>
-                                                    <span className="ml-[10px]">
-                                                        {opt.label}
-                                                    </span>
-                                                </button>
-                                            ))}
+                                        {menuOptions.map((opt, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={() => {
+                                                    setSelectedIndex(idx);
+                                                    opt.action();
+                                                }}
+                                                className={`
+                          w-full flex items-center
+                          ${selectedIndex === idx ? 'underline' : ''}
+                          hover:bg-white/10
+                          px-2 py-1
+                          cursor-pointer
+                        `}
+                                            >
+                                                <span className="mr-2">
+                                                    {selectedIndex === idx ? '→' : ' '}
+                                                </span>
+                                                <span className="ml-[10px]">{opt.label}</span>
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
                             )}
@@ -128,13 +137,22 @@ export default function HeroVideo() {
                         </video>
                     )}
 
-                    {/* Exit button inside frame */}
+                    {/* 🔴 Red “Power” Exit button inside frame */}
                     {shrink && !showMenu && (
                         <button
                             onClick={handleExit}
-                            className="absolute top-2 right-2 z-30 bg-white/80 text-black px-2 py-1 rounded text-sm hover:bg-white transition"
+                            aria-label="Power off"
+                            className={`
+                absolute left-[21%] top-[66%] z-30
+                bg-red-600 border-2 border-red-800
+                text-white
+                rounded-full p-1
+                shadow-inner
+                hover:bg-red-700
+                transition
+              `}
                         >
-                            Exit ⏹
+                            <Power className="w-5 h-5" />
                         </button>
                     )}
 
@@ -154,16 +172,17 @@ export default function HeroVideo() {
             {/* Intro text and button */}
             {showText && !showMenu && (
                 <div className="absolute inset-x-0 bottom-10 flex flex-col items-center justify-center text-center text-white px-4 z-30 space-y-4 animate-fade-in">
-                    <h1 className="text-3xl md:text-5xl font-bold">Hey, I&apos;m Lalz</h1>
-                    <p className="text-lg md:text-xl max-w-2xl">
-                        I&apos;m a multidisciplinary creative & developer. Welcome to my interactive portfolio — a space where design, storytelling, and code collide.
-                    </p>
-                    <button
-                        onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="mt-4(bg-white text-black px-6 py-2 rounded-full hover:bg-gray-200 transition)"
+                    <h1 className="text-3xl md:text-5xl font-bold">LAILA ZAYED</h1>
+                    {/* <button
+                        onClick={() =>
+                            document
+                                .getElementById('projects')
+                                ?.scrollIntoView({ behavior: 'smooth' })
+                        }
+                        className="mt-4 bg-white text-black px-6 py-2 rounded-full hover:bg-gray-200 transition"
                     >
                         View Projects
-                    </button>
+                    </button> */}
                 </div>
             )}
 
