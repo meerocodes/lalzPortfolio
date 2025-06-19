@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 
 export default function HeroVideo() {
     const [shrink, setShrink] = useState(false);
@@ -59,14 +58,15 @@ export default function HeroVideo() {
                         </div>
                     )}
 
-                    {/* TV frame graphic overlay */}
+                    {/* TV frame graphic overlay (plain <img> so it works after export) */}
                     {shrink && (
-                        <Image
-                            src="/images/tv-frame.png"
-                            alt="Vintage TV frame"
-                            fill
-                            className="absolute inset-0 object-contain pointer-events-none z-20"
-                        />
+                        <div className="absolute inset-0 pointer-events-none z-20">
+                            <img
+                                src="/assets/tv-frame.png"
+                                alt="Vintage TV frame"
+                                className="w-full h-full object-contain"
+                            />
+                        </div>
                     )}
                 </div>
             </div>
