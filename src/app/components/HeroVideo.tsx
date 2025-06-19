@@ -79,8 +79,8 @@ export default function HeroVideo() {
                                     Your browser does not support the video tag.
                                 </video>
                             ) : (
-                                <div className="w-full h-full px-4 py-4 flex flex-col justify-center text-green-300 font-mono">
-                                    <div>
+                                    <div className="w-full h-full px-4 py-4 flex flex-col justify-center text-green-300 font-mono text-xs md:text-base">
+<div>
                                             <span className="ml-5">User@Macintosh:~$</span>
                                     </div>
                                     <div className="mt-2 space-y-2">
