@@ -1,10 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export default function HeroVideo() {
     const [shrink, setShrink] = useState(false);
     const [showText, setShowText] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    // Menu options with label and action
+    const menuOptions = [
+        { label: 'Projects', action: () => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }) },
+        { label: 'Contact', action: () => window.location.href = 'mailto:you@example.com' },
+        { label: 'Play Video', action: () => handlePlay() }
+    ];
 
     useEffect(() => {
         const shrinkTimeout = setTimeout(() => setShrink(true), 1500);
@@ -15,8 +25,34 @@ export default function HeroVideo() {
         };
     }, []);
 
-    const scrollToProjects = () => {
-        document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+    // Handle keyboard navigation when menu is open
+    useEffect(() => {
+        const handleKey = (e: KeyboardEvent) => {
+            if (!showMenu) return;
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setSelectedIndex((prev) => (prev - 1 + menuOptions.length) % menuOptions.length);
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setSelectedIndex((prev) => (prev + 1) % menuOptions.length);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                menuOptions[selectedIndex].action();
+            }
+        };
+        window.addEventListener('keydown', handleKey);
+        return () => window.removeEventListener('keydown', handleKey);
+    }, [showMenu, selectedIndex]);
+
+    const handleExit = () => {
+        videoRef.current?.pause();
+        setShowMenu(true);
+        setSelectedIndex(0);
+    };
+
+    const handlePlay = () => {
+        setShowMenu(false);
+        videoRef.current?.play();
     };
 
     return (
@@ -24,12 +60,48 @@ export default function HeroVideo() {
             {/* Video + TV Frame Container */}
             <div
                 className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-in-out z-10 overflow-hidden
-          ${shrink ? 'w-[90vw] h-[60vw] md:w-[700px] md:h-[460px]' : 'w-full h-full'}`}
+          ${shrink ? 'w-[90vw] h-[90vw] md:w-[700px] md:h-[660px]' : 'w-full h-full'}`}
             >
                 <div className="relative w-full h-full">
+                    {/* Video or Command Prompt Menu inside frame window */}
+                    {shrink && (
+                        <div className="absolute top-[2%] left-[26%] w-[70%] h-[70%] rounded-sm bg-black z-10">
+                            {!showMenu ? (
+                                <video
+                                    ref={videoRef}
+                                    autoPlay
+                                    muted
+                                    loop
+                                    playsInline
+                                    className="w-full h-full object-cover"
+                                >
+                                    <source src="/assets/lalzVideoIntro.mp4" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            ) : (
+                                <div className="w-full h-full px-4 py-4 flex flex-col justify-center text-green-300 font-mono">
+                                    <div>
+                                        <span>User@Macintosh:~$</span>
+                                    </div>
+                                    <div className="mt-2 space-y-2">
+                                        {menuOptions.map((opt, idx) => (
+                                            <div key={idx} className="flex items-center">
+                                                <span className="mr-2">
+                                                    {selectedIndex === idx ? '→' : ' '}
+                                                </span>
+                                                <span className={`${selectedIndex === idx ? 'underline' : ''}`}> {opt.label}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {/* Fullscreen video before shrink */}
                     {!shrink && (
                         <video
+                            ref={videoRef}
                             autoPlay
                             muted
                             loop
@@ -41,28 +113,21 @@ export default function HeroVideo() {
                         </video>
                     )}
 
-                    {/* Video inset inside frame window */}
-                    {shrink && (
-                        <div className="absolute top-[20%] left-[22%] w-[55%] h-[58%] overflow-hidden rounded-sm">
-                            <video
-                                autoPlay
-                                muted
-                                loop
-                                playsInline
-                                className="w-full h-full object-cover"
-                            >
-                                <source src="/assets/lalzVideoIntro.mp4" type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                            <div className="absolute inset-0 pointer-events-none glitch-overlay" />
-                        </div>
+                    {/* Exit button inside frame */}
+                    {shrink && !showMenu && (
+                        <button
+                            onClick={handleExit}
+                            className="absolute top-2 right-2 z-30 bg-white/80 text-black px-2 py-1 rounded text-sm hover:bg-white transition"
+                        >
+                            Exit ⏹
+                        </button>
                     )}
 
-                    {/* TV frame graphic overlay (plain <img> so it works after export) */}
+                    {/* TV frame graphic overlay */}
                     {shrink && (
                         <div className="absolute inset-0 pointer-events-none z-20">
                             <img
-                                src="/assets/tv-frame.png"
+                                src="/assets/macintosh-pc.png"
                                 alt="Vintage TV frame"
                                 className="w-full h-full object-contain"
                             />
@@ -72,15 +137,15 @@ export default function HeroVideo() {
             </div>
 
             {/* Intro text and button */}
-            {showText && (
+            {showText && !showMenu && (
                 <div className="absolute inset-x-0 bottom-10 flex flex-col items-center justify-center text-center text-white px-4 z-30 space-y-4 animate-fade-in">
                     <h1 className="text-3xl md:text-5xl font-bold">Hey, I&apos;m Lalz</h1>
                     <p className="text-lg md:text-xl max-w-2xl">
                         I&apos;m a multidisciplinary creative & developer. Welcome to my interactive portfolio — a space where design, storytelling, and code collide.
                     </p>
                     <button
-                        onClick={scrollToProjects}
-                        className="mt-4 bg-white text-black px-6 py-2 rounded-full hover:bg-gray-200 transition"
+                        onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="mt-4(bg-white text-black px-6 py-2 rounded-full hover:bg-gray-200 transition)"
                     >
                         View Projects
                     </button>
