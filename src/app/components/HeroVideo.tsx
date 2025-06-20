@@ -8,16 +8,27 @@ export default function HeroVideo() {
     const [showText, setShowText] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [showProjectsList, setShowProjectsList] = useState(false);
+    const [showProjectDetail, setShowProjectDetail] = useState(false);
+    const [selectedProjectIndex, setSelectedProjectIndex] = useState<number | null>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+
+    // List of projects - replace with your real project data/rendering
+    const projects = [
+        { label: 'Project One', render: () => <div className="p-4 text-white">Project One Fullscreen Content</div> },
+        { label: 'Project Two', render: () => <div className="p-4 text-white">Project Two Fullscreen Content</div> },
+    ];
 
     // Menu options with label and action
     const menuOptions = [
         {
             label: 'Projects',
-            action: () =>
-                document
-                    .getElementById('projects')
-                    ?.scrollIntoView({ behavior: 'smooth' }),
+            action: () => {
+                videoRef.current?.pause();
+                setShowMenu(true);
+                setShowProjectsList(true);
+                setSelectedIndex(0);
+            },
         },
         {
             label: 'Contact',
@@ -38,7 +49,7 @@ export default function HeroVideo() {
     // Handle keyboard navigation when menu is open
     useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
-            if (!showMenu) return;
+            if (!showMenu || showProjectsList || showProjectDetail) return;
             if (e.key === 'ArrowUp') {
                 e.preventDefault();
                 setSelectedIndex((prev) => (prev - 1 + menuOptions.length) % menuOptions.length);
@@ -52,16 +63,20 @@ export default function HeroVideo() {
         };
         window.addEventListener('keydown', handleKey);
         return () => window.removeEventListener('keydown', handleKey);
-    }, [showMenu, selectedIndex]);
+    }, [showMenu, showProjectsList, showProjectDetail, selectedIndex]);
 
     const handleExit = () => {
         videoRef.current?.pause();
         setShowMenu(true);
         setSelectedIndex(0);
+        setShowProjectsList(false);
+        setShowProjectDetail(false);
     };
 
     const handlePlay = () => {
         setShowMenu(false);
+        setShowProjectsList(false);
+        setShowProjectDetail(false);
         videoRef.current?.play();
     };
 
@@ -77,7 +92,8 @@ export default function HeroVideo() {
                     {/* Video or Command Prompt Menu inside frame window */}
                     {shrink && (
                         <div className="absolute top-[10%] left-[22%] w-[60%] h-[50%] rounded-sm bg-black z-10">
-                            {!showMenu ? (
+                            {/* Project Detail handles full-screen separately */}
+                            {!showMenu && !showProjectsList && !showProjectDetail ? (
                                 <video
                                     ref={videoRef}
                                     autoPlay
@@ -89,6 +105,26 @@ export default function HeroVideo() {
                                     <source src="/assets/lalzVideoIntro.mp4" type="video/mp4" />
                                     Your browser does not support the video tag.
                                 </video>
+                            ) : showProjectsList && !showProjectDetail ? (
+                                <div className="w-full h-full px-4 py-4 flex flex-col justify-center text-green-300 font-mono text-xs md:text-base">
+                                    <div className="mb-2"><span className="ml-5">Projects:</span></div>
+                                    <div className="space-y-2">
+                                        {projects.map((proj, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={() => {
+                                                    setSelectedProjectIndex(idx);
+                                                    setShowProjectDetail(true);
+                                                }}
+                                                className="w-full flex items-center hover:bg-white/10 px-2 py-1 cursor-pointer"
+                                            >
+                                                <span className="ml-[10px] text-green-300 font-mono text-xs md:text-base">
+                                                    {proj.label}
+                                                </span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                             ) : (
                                 <div className="w-full h-full px-4 py-4 flex flex-col justify-center text-green-300 font-mono text-xs md:text-base">
                                     <div>
@@ -102,13 +138,7 @@ export default function HeroVideo() {
                                                     setSelectedIndex(idx);
                                                     opt.action();
                                                 }}
-                                                className={`
-                          w-full flex items-center
-                          ${selectedIndex === idx ? 'underline' : ''}
-                          hover:bg-white/10
-                          px-2 py-1
-                          cursor-pointer
-                        `}
+                                                className={`w-full flex items-center ${selectedIndex === idx ? 'underline' : ''} hover:bg-white/10 px-2 py-1 cursor-pointer`}
                                             >
                                                 <span className="mr-2">
                                                     {selectedIndex === idx ? '→' : ' '}
@@ -138,26 +168,32 @@ export default function HeroVideo() {
                     )}
 
                     {/* 🔴 Red “Power” Exit button inside frame */}
-                    {shrink && !showMenu && (
+                    {shrink && !showMenu && !showProjectsList && !showProjectDetail && (
                         <button
                             onClick={handleExit}
                             aria-label="Power off"
-                            className={`
-                absolute left-[21%] top-[66%] z-30
-                bg-red-600 border-2 border-red-800
-                text-white
-                rounded-full p-1
-                shadow-inner
-                hover:bg-red-700
-                transition
-              `}
+                            className="absolute left-[21%] top-[66%] z-30 bg-red-600 border-2 border-red-800 text-white rounded-full p-1 shadow-inner hover:bg-red-700 transition pulse-glow"
                         >
                             <Power className="w-5 h-5" />
                         </button>
                     )}
 
+                    {/* Back button inside monitor (to project list) */}
+                    {shrink && showProjectsList && !showProjectDetail && (
+                        <button
+                            onClick={() => {
+                                setShowProjectsList(false);
+                                setShowMenu(true);
+                            }}
+                            aria-label="Back"
+                            className="absolute left-3 top-3 z-30 bg-white/10 text-white rounded-full p-1 hover:bg-white/20 transition"
+                        >
+                            Back
+                        </button>
+                    )}
+
                     {/* TV frame graphic overlay */}
-                    {shrink && (
+                    {shrink && !showProjectDetail && (
                         <div className="absolute inset-0 pointer-events-none z-20">
                             <img
                                 src="/assets/macintosh-pc.png"
@@ -170,23 +206,32 @@ export default function HeroVideo() {
             </div>
 
             {/* Intro text and button */}
-            {showText && !showMenu && (
+            {showText && !showMenu && !showProjectsList && !showProjectDetail && (
                 <div className="absolute inset-x-0 bottom-10 flex flex-col items-center justify-center text-center text-white px-4 z-30 space-y-4 animate-fade-in">
                     <h1 className="text-3xl md:text-5xl font-bold">LAILA ZAYED</h1>
-                    {/* <button
-                        onClick={() =>
-                            document
-                                .getElementById('projects')
-                                ?.scrollIntoView({ behavior: 'smooth' })
-                        }
-                        className="mt-4 bg-white text-black px-6 py-2 rounded-full hover:bg-gray-200 transition"
-                    >
-                        View Projects
-                    </button> */}
                 </div>
             )}
 
-            {/* Glitch scanline styles */}
+            {/* Fullscreen project detail */}
+            {showProjectDetail && selectedProjectIndex !== null && (
+                <div className="absolute inset-0 bg-black text-white z-40 overflow-auto">
+                    <button
+                        onClick={() => {
+                            setShowProjectDetail(false);
+                            setShowProjectsList(true);
+                        }}
+                        aria-label="Back to Projects"
+                        className="absolute top-4 left-4 z-50 bg-white/10 text-white rounded-full p-1 hover:bg-white/20 transition"
+                    >
+                        Back
+                    </button>
+                    <div className="p-8 pt-16">
+                        {projects[selectedProjectIndex].render()}
+                    </div>
+                </div>
+            )}
+
+            {/* Glitch scanline styles + Pulse/Glow animation */}
             <style jsx>{`
         .glitch-overlay {
           background: repeating-linear-gradient(
@@ -206,6 +251,23 @@ export default function HeroVideo() {
           60% { transform: translateX(-2px); }
           80% { transform: translateX(2px); }
           100% { opacity: 0.5; transform: translateX(0); }
+        }
+        @keyframes pulseGlow {
+          0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+          }
+          50% {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px 5px rgba(255, 0, 0, 0.7);
+          }
+          100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+          }
+        }
+        .pulse-glow {
+          animation: pulseGlow 1.5s ease-in-out infinite;
         }
       `}</style>
         </section>

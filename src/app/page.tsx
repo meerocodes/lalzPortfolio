@@ -7,10 +7,10 @@ import ContactSection from './components/ContactSection';
 export default function Home() {
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <HeroVideo />
-      <ProjectsSection />
-      <ContactSection />
+      {/* <ProjectsSection />
+      <ContactSection /> */}
     </>
   );
 }
