@@ -1,21 +1,49 @@
 'use client';
-export default function ProjectsSection() {
 
+import ProjectOne from './projects/ProjectOne';
+import ProjectTwo from './projects/ProjectTwo';
+// import additional projects as needed
+
+const PROJECT_COMPONENTS = [
+    { label: 'Project One', Component: ProjectOne },
+    { label: 'Project Two', Component: ProjectTwo },
+    // add more here
+];
+
+interface ProjectsSectionProps {
+    onBack: () => void;
+    onSelect: (idx: number) => void;
+}
+
+export default function ProjectsSection({ onBack, onSelect }: ProjectsSectionProps) {
     return (
-        <section id="projects" className="relative w-full h-screen">
-            <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full h-full object-cover"
+        <div className="absolute top-[20%] left-[8%] w-[60%] h-[50%] z-30 rounded-sm px-4 py-4 ">
+            {/* Back button */}
+            <button
+                onClick={onBack}
+                aria-label="Back to Menu"
+                className="absolute top-2 left-2 text-green-300 font-mono hover:text-green-200 transition"
             >
-                <source src="/hero-video.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-            </video>
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <h2 className="text-4xl md:text-6xl font-bold">Welcome to Lalz</h2>
+                ← Back
+            </button>
+
+            {/* Title */}
+            <h2 className="mt-8 ml-2 text-white font-mono text-xs md:text-base">
+                Projects:
+            </h2>
+
+            {/* Project list */}
+            <div className="mt-2 space-y-2">
+                {PROJECT_COMPONENTS.map((proj, idx) => (
+                    <button
+                        key={proj.label}
+                        onClick={() => onSelect(idx)}
+                        className="w-full text-left text-white font-mono text-xs md:text-base hover:bg-white/10 px-2 py-1 rounded  "
+                    >
+                        {proj.label}
+                    </button>
+                ))}
             </div>
-        </section>
+        </div>
     );
 }
