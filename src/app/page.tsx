@@ -1,8 +1,8 @@
 
-import Header from './components/Header';
+// import Header from './components/Header';
 import HeroVideo from './components/HeroVideo';
-import ProjectsSection from './components/ProjectSection';
-import ContactSection from './components/ContactSection';
+// import ProjectsSection from './components/ProjectSection';
+// import ContactSection from './components/ContactSection';
 
 export default function Home() {
   return (
