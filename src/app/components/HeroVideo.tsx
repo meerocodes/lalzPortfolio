@@ -85,7 +85,7 @@ export default function HeroVideo() {
     return (
         <section className="relative w-full h-screen overflow-hidden bg-black">
             {/* Frame container */}
-            <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-in-out z-10 overflow-hidden ${shrink ? 'w-[90vw] h-[90vw] md:w-[700px] md:h-[660px]' : 'w-full h-full'}`}>
+            <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-in-out z-10 overflow-hidden ${shrink ? 'w-[90vw] h-[100vw] md:w-[700px] md:h-[660px]' : 'w-full h-full'}`}>
                 <div className="relative w-full h-full">
                     {/* Detail view */}
                     {showDetail && (
@@ -100,7 +100,7 @@ export default function HeroVideo() {
 
                     {/* Inside monitor */}
                     {shrink && !showDetail && (
-                        <div className="absolute top-[10%] left-[22%] w-[60%] h-[50%] rounded-sm bg-green-800 z-10">
+                        <div className="absolute top-[10%] left-[20%] w-[60%] h-[50%] rounded-sm bg-green-800 z-10">
                             {showProjects ? (
                                 <ProjectsSection onBack={() => setShowProjects(false)} onSelect={openDetail} />
                             ) : showContact ? (
@@ -110,7 +110,7 @@ export default function HeroVideo() {
                                     <source src="/assets/lalzVideoIntro.mp4" type="video/mp4" />
                                 </video>
                             ) : (
-                                <div className="w-full h-full px-4 py-4 flex flex-col justify-center font-mono text-xs md:text-base">
+                                <div className="w-full h-full py-2 flex flex-col justify-center font-mono text-xs md:text-base">
                                     <span className="ml-5">User@Macintosh:~$</span>
                                     <div className="mt-2 space-y-2">
                                         {menuOptions.map((opt, idx) => (
