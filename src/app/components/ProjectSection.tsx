@@ -134,7 +134,7 @@ export default function ProjectsSection({ onBack, onSelect }: ProjectsSectionPro
             </button>
 
             {/* Title */}
-            <h2 className="mt-8 ml-2 text-green-300 font-mono text-xs md:text-base">
+            <h2 className="mt-6  text-green-300 font-mono text-xs md:text-base md:ml-4">
                 {stage === 'folders' ? 'Projects:' : FOLDERS[selectedFolderIndex].label + ':'}
             </h2>
 
