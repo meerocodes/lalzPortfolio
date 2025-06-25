@@ -9,7 +9,7 @@ import ProjectTwo from './projects/ProjectTwo';
 
 export default function HeroVideo() {
     const [shrink, setShrink] = useState(false);
-    const [showText, setShowText] = useState(false);
+    // const [showText, setShowText] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [showProjects, setShowProjects] = useState(false);
     const [showContact, setShowContact] = useState(false);
@@ -44,8 +44,8 @@ export default function HeroVideo() {
 
     useEffect(() => {
         const t1 = setTimeout(() => setShrink(true), 1500);
-        const t2 = setTimeout(() => setShowText(true), 2000);
-        return () => { clearTimeout(t1); clearTimeout(t2); };
+        // const t2 = setTimeout(() => setShowText(true), 2000);
+        // return () => { clearTimeout(t1); clearTimeout(t2); };
     }, []);
 
     useEffect(() => {
