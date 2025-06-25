@@ -17,12 +17,30 @@ export default function HeroVideo() {
     const [detailIdx, setDetailIdx] = useState<number>(0);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const screenRef = useRef<HTMLDivElement>(null);
+    const powerButtonRef = useRef<HTMLButtonElement>(null);
 
     const menuOptions = [
         { label: 'Projects', action: () => setShowProjects(true) },
         { label: 'Contact', action: () => setShowContact(true) },
         { label: 'Play Video', action: () => play() },
     ];
+
+    // Scanline effect for monitor screen
+    useEffect(() => {
+        const screen = screenRef.current;
+        if (!screen || !shrink) return;
+
+        const scanLine = document.createElement('div');
+        scanLine.className = 'absolute top-0 left-0 w-full h-[1px] bg-green-400/20 z-40 animate-scanline pointer-events-none';
+        screen.appendChild(scanLine);
+
+        return () => {
+            if (screen.contains(scanLine)) {
+                screen.removeChild(scanLine);
+            }
+        };
+    }, [shrink, showMenu, showProjects, showContact, showDetail]);
 
     useEffect(() => {
         const t1 = setTimeout(() => setShrink(true), 1500);
@@ -54,6 +72,16 @@ export default function HeroVideo() {
     };
 
     const exit = () => {
+        // Add button press effect
+        if (powerButtonRef.current) {
+            powerButtonRef.current.classList.add('power-button-active');
+            setTimeout(() => {
+                if (powerButtonRef.current) {
+                    powerButtonRef.current.classList.remove('power-button-active');
+                }
+            }, 200);
+        }
+
         videoRef.current?.pause();
         setShowMenu(true);
         setShowProjects(false);
@@ -98,19 +126,31 @@ export default function HeroVideo() {
                         </div>
                     )}
 
-                    {/* Inside monitor */}
+                    {/* Inside monitor with CRT effects */}
                     {shrink && !showDetail && (
-                        <div className="absolute top-[10%] left-[20%] w-[60%] h-[50%] rounded-sm bg-green-800 z-10">
+                        <div
+                            ref={screenRef}
+                            className={
+                                "absolute top-[10%] left-[20%] w-[60%] h-[50%] rounded-sm z-10 md:left-[25%] md:w-[50%] " +
+                                "bg-green-800 border border-green-500/30 " +
+                                "shadow-[0_0_25px_rgba(0,255,127,0.5),inset_0_0_20px_rgba(0,255,0,0.1)] " +
+                                "overflow-hidden"
+                            }
+                        >
+                            {/* Vignette effect */}
+                            <div className="absolute inset-0 rounded-sm shadow-[inset_0_0_40px_5px_rgba(0,0,0,0.6)] pointer-events-none z-0"></div>
+
+                            {/* Content */}
                             {showProjects ? (
                                 <ProjectsSection onBack={() => setShowProjects(false)} onSelect={openDetail} />
                             ) : showContact ? (
                                 <ContactSection onBack={backFromContact} />
                             ) : !showMenu ? (
-                                <video ref={videoRef} autoPlay muted loop playsInline className="w-full h-full object-cover">
+                                <video ref={videoRef} autoPlay muted loop playsInline className="w-full h-full object-cover relative z-10">
                                     <source src="/assets/lalzVideoIntro.mp4" type="video/mp4" />
                                 </video>
                             ) : (
-                                <div className="w-full h-full py-2 flex flex-col justify-center font-mono text-xs md:text-base">
+                                <div className="w-full h-full py-2 flex flex-col justify-center font-mono text-xs md:text-base relative z-10">
                                     <span className="ml-5">User@Macintosh:~$</span>
                                     <div className="mt-2 space-y-2">
                                         {menuOptions.map((opt, idx) => (
@@ -137,36 +177,119 @@ export default function HeroVideo() {
                         </video>
                     )}
 
-                    {/* Power button */}
-                    {shrink && !showMenu && !showProjects && !showDetail && !showContact && (
-                        <button onClick={exit} className="absolute left-[21%] top-[66%] z-30 bg-red-600 border-2 border-red-800 text-white rounded-full p-1 shadow-inner hover:bg-red-700 transition pulse-glow">
-                            <Power className="w-5 h-5" />
-                        </button>
-                    )}
-
                     {/* Monitor frame */}
                     {shrink && (
                         <div className="absolute inset-0 pointer-events-none z-20">
                             <img src="/assets/macintosh-pc.png" alt="Vintage TV frame" className="w-full h-full object-contain" />
                         </div>
                     )}
+
+                    {/* POWER BUTTON - 3D STYLE WITH INNER AMBER GLOW */}
+                    {shrink && !showDetail && (
+                        <button
+                            ref={powerButtonRef}
+                            onClick={exit}
+                            className="power-button absolute left-[21%] top-[66%] z-50 p-1 transition-all duration-200"
+                        >
+                            <div className="power-button-inner">
+                                <Power className="w-5 h-5 relative z-10 text-amber-200/80" />
+                            </div>
+                        </button>
+                    )}
                 </div>
             </div>
 
             {/* Intro text */}
-            {showText && !showMenu && !showProjects && !showDetail && !showContact && (
+            {/* {showText && !showMenu && !showProjects && !showDetail && !showContact && (
                 <div className="absolute inset-x-0 bottom-10 flex flex-col items-center justify-center text-center text-white px-4 z-30 space-y-4 animate-fade-in">
                     <h1 className="text-3xl md:text-5xl font-bold">LAILA ZAYED</h1>
                 </div>
-            )}
+            )} */}
 
             <style jsx>{`
-                @keyframes pulseGlow {
-                    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,0,0,0.7); }
-                    50% { transform: scale(1.2); box-shadow: 0 0 10px 5px rgba(255,0,0,0.7); }
-                    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,0,0,0.7); }
+                @keyframes scanline {
+                    0% { transform: translateY(-100%); }
+                    100% { transform: translateY(calc(100% + 1px)); }
                 }
-                .pulse-glow { animation: pulseGlow 1.5s ease-in-out infinite; }
+                .animate-scanline {
+                    animation: scanline 4s linear infinite;
+                }
+                
+                /* Power button 3D styling with inner glow */
+                .power-button {
+                    left: 21%;
+                    top: 66%;
+                    width: 42px;
+                    height: 42px;
+                    perspective: 200px;
+                    border: none;
+                    background: none;
+                    cursor: pointer;
+                    transform: translateZ(0);
+                }
+                
+                .power-button-inner {
+                    position: relative;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(145deg, #d63031, #c0392b);
+                    border-radius: 4px;
+                    box-shadow: 
+                        inset 0 -2px 0 rgba(0,0,0,0.3),
+                        inset 0 2px 0 rgba(255,255,255,0.1),
+                        inset 0 0 15px rgba(255, 165, 0, 0.4),
+                        0 4px 8px rgba(0,0,0,0.4);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transform: translateZ(0);
+                    transition: all 0.15s ease;
+                    z-index: 2;
+                    animation: innerAmberPulse 1.5s infinite;
+                }
+                
+                .power-button:hover .power-button-inner {
+                    background: linear-gradient(145deg, #e74c3c, #d63031);
+                    box-shadow: 
+                        inset 0 -1px 0 rgba(0,0,0,0.2),
+                        inset 0 1px 0 rgba(255,255,255,0.1),
+                        inset 0 0 20px rgba(255, 165, 0, 0.6),
+                        0 6px 12px rgba(0,0,0,0.5);
+                }
+                
+                .power-button-active .power-button-inner {
+                    transform: translateY(2px);
+                    box-shadow: 
+                        inset 0 -1px 0 rgba(0,0,0,0.1),
+                        inset 0 1px 0 rgba(255,255,255,0.05),
+                        inset 0 0 10px rgba(255, 165, 0, 0.3),
+                        0 1px 2px rgba(0,0,0,0.3);
+                    background: linear-gradient(145deg, #c0392b, #b53224);
+                }
+                
+                @keyframes innerAmberPulse {
+                    0% { 
+                        box-shadow: 
+                            inset 0 -2px 0 rgba(0,0,0,0.3),
+                            inset 0 2px 0 rgba(255,255,255,0.1),
+                            inset 0 0 15px rgba(255, 165, 0, 0.4),
+                            0 4px 8px rgba(0,0,0,0.4);
+                    }
+                    50% { 
+                        box-shadow: 
+                            inset 0 -2px 0 rgba(0,0,0,0.3),
+                            inset 0 2px 0 rgba(255,255,255,0.1),
+                            inset 0 0 25px rgba(255, 165, 0, 0.8),
+                            0 4px 8px rgba(0,0,0,0.4);
+                    }
+                    100% { 
+                        box-shadow: 
+                            inset 0 -2px 0 rgba(0,0,0,0.3),
+                            inset 0 2px 0 rgba(255,255,255,0.1),
+                            inset 0 0 15px rgba(255, 165, 0, 0.4),
+                            0 4px 8px rgba(0,0,0,0.4);
+                    }
+                }
             `}</style>
         </section>
     );

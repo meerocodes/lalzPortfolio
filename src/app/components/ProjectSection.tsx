@@ -116,7 +116,7 @@ export default function ProjectsSection({ onBack, onSelect }: ProjectsSectionPro
             : FOLDERS[selectedFolderIndex].projects.map((p) => p.label);
 
     return (
-        <div className="absolute top-[20%] left-[5%] w-[60%] h-[50%] z-30 rounded-sm px-4 py-4">
+        <div className="absolute top-[20%] left-[5%] w-[60%] h-[50%] z-30 rounded-sm px-4 py-4 md:left-[0]">
             {/* Back button */}
             <button
                 onClick={() => {
@@ -134,18 +134,18 @@ export default function ProjectsSection({ onBack, onSelect }: ProjectsSectionPro
             </button>
 
             {/* Title */}
-            <h2 className="mt-6  text-green-300 font-mono text-xs md:text-base md:ml-4">
+            <h2 className="mt-6  text-green-200 font-mono text-xs md:text-base md:ml-4">
                 {stage === 'folders' ? 'Projects:' : FOLDERS[selectedFolderIndex].label + ':'}
             </h2>
 
             {stage === 'folders' ? (
-                <div className=" pl-12 mt-2 grid grid-cols-4 gap-x-13 gap-y-2 md:grid-cols-2 md:pl-20 md:gap-x-15 md:gap-y-4 justify-center">
+                <div className=" pl-12 mt-2 grid grid-cols-4 gap-x-13 gap-y-2 md:grid-cols-2 md:pl-28 md:gap-x-30 md:gap-y-4 justify-center">
                     {FOLDERS.map((folder, idx) => (
                         <button
                             key={folder.label}
                             onClick={() => handleItemClick(idx)}
                             onMouseEnter={() => setSelectedIndex(idx)}
-                            className={`flex flex-col items-center text-green-300 hover:text-white transition ${selectedIndex === idx ? 'underline' : ''
+                            className={`flex flex-col items-center text-green-100 hover:text-white transition ${selectedIndex === idx ? 'underline' : ''
                                 }`}
                         >
                             <Folder className="w-4 h-4 md:w-8 md:h-8 mb-1" />
@@ -162,7 +162,7 @@ export default function ProjectsSection({ onBack, onSelect }: ProjectsSectionPro
                             key={label}
                             onClick={() => handleItemClick(idx)}
                             onMouseEnter={() => setSelectedIndex(idx)}
-                            className={`w-full flex items-center whitespace-nowrap text-left text-green-300 font-mono text-xs md:text-base hover:bg-white/10 px-2 py-1 rounded ${selectedIndex === idx ? 'underline' : ''
+                            className={`w-full flex items-center whitespace-nowrap text-left text-green-00 font-mono text-xs md:text-base hover:bg-white/10 px-2 py-1 rounded ${selectedIndex === idx ? 'underline' : ''
                                 }`}
                         >
                             <span className="mr-2">{selectedIndex === idx ? '→' : ' '}</span>
