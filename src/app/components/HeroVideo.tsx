@@ -189,7 +189,7 @@ export default function HeroVideo() {
                         <button
                             ref={powerButtonRef}
                             onClick={exit}
-                            className="power-button absolute left-[21%] top-[66%] z-50 p-1 transition-all duration-200"
+                            className="power-button absolute w-[40px] h-[40px] left-[15%] top-[66%] z-50 p-1 transition-all duration-200 md:left-[20%] md:h-[50px]  md:w-[50px]"
                         >
                             <div className="power-button-inner">
                                 <Power className="w-5 h-5 relative z-10 text-amber-200/80" />
@@ -217,10 +217,7 @@ export default function HeroVideo() {
                 
                 /* Power button 3D styling with inner glow */
                 .power-button {
-                    left: 21%;
                     top: 66%;
-                    width: 42px;
-                    height: 42px;
                     perspective: 200px;
                     border: none;
                     background: none;
@@ -253,8 +250,8 @@ export default function HeroVideo() {
                     box-shadow: 
                         inset 0 -1px 0 rgba(0,0,0,0.2),
                         inset 0 1px 0 rgba(255,255,255,0.1),
-                        inset 0 0 20px rgba(255, 165, 0, 0.6),
-                        0 6px 12px rgba(0,0,0,0.5);
+                        inset 0 0 20px rgba(255, 165, 0, 0.9),
+                        0 6px 12px rgba(0,0,0,0.9);
                 }
                 
                 .power-button-active .power-button-inner {
