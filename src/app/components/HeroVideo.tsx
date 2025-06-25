@@ -44,8 +44,7 @@ export default function HeroVideo() {
 
     useEffect(() => {
         const t1 = setTimeout(() => setShrink(true), 1500);
-        // const t2 = setTimeout(() => setShowText(true), 2000);
-        // return () => { clearTimeout(t1); clearTimeout(t2); };
+        return () => clearTimeout(t1);
     }, []);
 
     useEffect(() => {
